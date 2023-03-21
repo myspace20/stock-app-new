@@ -1,0 +1,32 @@
+@use "buttons";
+
+.splash {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-image: url('../assets/storeImage.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+
+    h1 {
+        font-size: 40px;
+        color: white;
+    }
+
+    .splashButtons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80%;
+        margin: 0px auto;
+        padding: 40px;
+
+        a {
+            margin: 0px 10px;
+            @include buttons.button
+        }
+    }
+}
+

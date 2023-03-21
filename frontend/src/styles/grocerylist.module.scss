@@ -1,0 +1,37 @@
+@use "buttons";
+
+.vegeList{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+    margin-inline: auto;
+    padding: 2rem;
+
+    h1{
+        text-align: center;
+        font-size: 2rem;
+        padding: 1rem 0rem;
+      }
+    .vegeCard{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 90%;
+        margin-inline: auto;
+        padding: 0.8rem;
+
+        .vegeButton{
+            @include buttons.button
+        }
+
+    }
+    
+}
+
+:export{
+    vegeCard : string
+}
+  

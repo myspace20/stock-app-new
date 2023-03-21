@@ -1,16 +1,22 @@
-import {GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull,GraphQLSchema } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull, GraphQLSchema, GraphQLBoolean, GraphQLArgumentConfig, GraphQLArgs, GraphQLTypeResolver, GraphQLScalarType, GraphQLInputType, GraphQLInputObjectType } from 'graphql'
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import User from '../models/user'
 import Stock from '../models/stock'
+import path from "path";
+import  fs from "fs";
+import { FileUploadResponseType, UploadType, fileRenamer } from '../utils/utils'
 
 
-// interface stockType extends GraphQLObjectType{
-//     name:string,
-//     fields:() => User
-// }
+
 
 const secret = process.env.JWT_SECRET as string
+
+interface IFormParams {
+    file: any,
+}
+
 
 
 const stockType: GraphQLObjectType = new GraphQLObjectType({
@@ -81,7 +87,7 @@ const RootQuery = new GraphQLObjectType({
 
 })
 
-const Mutation = new GraphQLObjectType({
+const Mutation: any = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
         register: {
@@ -115,7 +121,7 @@ const Mutation = new GraphQLObjectType({
                     firstName: args.firstName,
                     position: args.position,
                     password: hashedPassword,
-                    image:args.image
+                    image: args.image
                 })
 
                 const token = jwt.sign({
@@ -141,7 +147,7 @@ const Mutation = new GraphQLObjectType({
                 console.log(context.request)
                 const user = await User.findOne({ email: args.email })
 
-                let password = user?.password as string 
+                let password = user?.password as string
 
                 console.log(user)
 
@@ -156,7 +162,7 @@ const Mutation = new GraphQLObjectType({
                         expiresIn: "1h"
                     })
 
-                    let userToken = user?.token as string 
+                    let userToken = user?.token as string
 
                     userToken = token
 
@@ -209,13 +215,33 @@ const Mutation = new GraphQLObjectType({
             resolve(parent, args) {
                 const user = User.findOneAndUpdate({ _id: args.id })
             }
-        }
+        },
+        fileUpload: {
+            type: FileUploadResponseType,
+            args:{
+                file:{type:UploadType}
+            },
+            async resolve(parent, args){
+                const { createReadStream,filename, mimetype } = await args.file.file;
+                const stream = createReadStream();
+                console.log(stream);
+                const uniqueName:string =  fileRenamer(filename);
+                const pathName = path.join(__dirname, '../../files/'+uniqueName);
+                await stream.pipe(fs.createWriteStream(pathName));
+                return {
+                    success:true,
+                    message:'file uploaded successfully'
+                }
+            }
+        },
     }
 })
 
-
-module.exports = new GraphQLSchema({
+const schema: GraphQLSchema = new GraphQLSchema({
     query: RootQuery,
     mutation: Mutation
 })
+
+
+export default schema
 

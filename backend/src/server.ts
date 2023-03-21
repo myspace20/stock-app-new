@@ -1,6 +1,13 @@
 import express, { Application, Response, Request} from 'express'
-import { graphqlHTTP } from 'express-graphql'
+import { graphqlHTTP,} from 'express-graphql'
 import cors from 'cors'
+import schema from './schema/schema'
+import env from 'dotenv'
+
+
+env.config()
+
+const port = process.env.PORT as string
 
 
 
@@ -12,9 +19,21 @@ const main = async () =>{
 
     app.use(express.json())
 
-    app.listen(3000, 'localhost', ()=>{
+    app.listen(port, ()=>{
         console.log("Live")
     })
+
+    app.use('/graphiql', graphqlHTTP((req, res) =>{
+
+
+        return{
+            schema,
+            graphiql: true,
+            context: { request: req.headers.authorization}
+        }
+    
+    }))
+
 }
 
 

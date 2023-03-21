@@ -1,0 +1,25 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  border-bottom: 0.1rem solid grey;
+  width: 90%;
+  margin-inline: auto;
+
+  ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 1rem;
+
+    li {
+      padding: 0.4rem;
+
+    }
+  }
+}
+
+:export {
+  myClass: string;
+}

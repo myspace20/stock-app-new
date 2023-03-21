@@ -1,0 +1,21 @@
+@use "forms";
+
+.register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+
+    h1{
+        font-size: 40px;
+    }
+
+    .form{
+        @include forms.form
+    }
+}
+
+:export{
+    register: string
+}
